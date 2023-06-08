@@ -1,0 +1,6 @@
+load_dotenv
+flask
+langchain
+openai
+duckduckgo-search
+google-cloud-aiplatform
