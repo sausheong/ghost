@@ -15,6 +15,14 @@ It is fully customisable and extensible.
 
 After you have clone the repo, rename the `.env.example` file to `.env` and provide the necessary API key and other information from your provider.
 
+Then set up the packages needed to run Ghost with pip.
+
+```
+$ pip install -r requirements.txt
+```
+
+You can consider setting up its own environment using Conda or pyenv or any of these similar tools.
+
 Then you can run the app by doing this at the command line:
 
 ```
