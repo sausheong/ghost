@@ -10,3 +10,17 @@ ghost is written using Langchain and has configured the following tools:
 3. DuckDuckSearch Tool
 
 It is fully customisable and extensible.
+
+## Setup
+
+After you have clone the repo, rename the `.env.example` file to `.env` and provide the necessary API key and other information from your provider.
+
+Then you can run the app by doing this at the command line:
+
+```
+$ python ghost.py
+```
+
+## Ghost specifications
+
+You can change how Ghost behaves by changing `specs.md` or pointing the specs to a different file in the `.env` file. The specifications determine how Ghost will react to your prompts.
