@@ -1,6 +1,8 @@
 load_dotenv
 flask
+waitress
 langchain
 openai
 duckduckgo-search
+wikipedia
 google-cloud-aiplatform

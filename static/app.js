@@ -1,17 +1,18 @@
 
 t = 0;
 let resp = "";
+
 $(document).ready(function(){  
     $('#send').click(function(e){
         e.preventDefault();
         var prompt = $("#prompt").val().trimEnd();
         $("#prompt").val("");
         $("#printout").append(
-            "<div class='mx-3 pt-3 text-primary-emphasis'>" + 
+            "<div class='px-3 pt-2 text-primary-emphasis bg-light'>" + 
             "<pre style='white-space: pre-wrap;'>" +
             prompt  +
             "</pre>" +
-            "</div><hr/>"             
+            "<hr/></div>"             
         );        
         $(".border").animate({ scrollTop: $('.border').prop("scrollHeight")}, 1000);
         runScript(prompt);        
@@ -54,15 +55,16 @@ function runScript(prompt, action="/run") {
             $("#bot").addClass("fa-solid fa-ghost");
             $("#bot").removeClass("spinner-border");                          
             $("#printout").append(
-                "<div class='mx-3 pt-2 pb-2'>" + 
+                "<div class='px-3 py-2'>" + 
                 "<pre style='white-space: pre-wrap;'>" + 
                 data.response + 
                 "</pre>" +
                 " <small>(" + t + "s)</small> " + 
-                "</div><hr/>" 
+                "<hr/></div>" 
             );           
             $(".border").animate({ scrollTop: $('.border').prop("scrollHeight")}, 1000);
             t = 0;
+            hljs.highlightAll();
         }
     });   
 }

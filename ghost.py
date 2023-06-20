@@ -6,15 +6,14 @@ from langchain.agents import initialize_agent, Tool, AgentType
 from langchain.utilities import PythonREPL
 from langchain.tools import ShellTool
 from langchain.tools import DuckDuckGoSearchRun
-from langchain.chat_models import AzureChatOpenAI
+from langchain.chat_models import AzureChatOpenAI, ChatVertexAI, ChatOpenAI
+from waitress import serve
+import webbrowser
 
 # get configurations
 load_dotenv(find_dotenv())
-api_key  = os.getenv('OPENAI_API_KEY')
 specs_file = os.getenv('SPECS')
-model = os.getenv('LLM_MODEL')
-api_version = os.getenv('OPENAI_API_VERSION')
-base_url = os.getenv('OPENAI_API_BASE')
+model = os.getenv('MODEL')
 
 # get path for static files
 static_dir = os.path.join(os.path.dirname(__file__), 'static')  
@@ -27,6 +26,7 @@ def initAgent():
     specs = ""
     with open(specs_file, 'r') as file:
         specs = file.read()
+    print(specs, "\nlength:", len(specs), "words")
 
     python_repl = PythonREPL()
     repl_tool = Tool(
@@ -39,17 +39,42 @@ def initAgent():
     shell_tool = ShellTool()
     search = DuckDuckGoSearchRun()
     tools = [repl_tool, shell_tool, search]
-
     memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
-    llm = AzureChatOpenAI(
-        temperature=0.0,
-        max_tokens=8192-len(specs),
-        openai_api_base=base_url,
-        openai_api_version=api_version,
-        deployment_name=model,
-        openai_api_key=api_key,
-        openai_api_type = "azure",
-    )    
+
+    # OpenAI
+    if model == "openai":
+        api_key  = os.getenv('OPENAI_API_KEY')
+        model_name = os.getenv('OPENAI_MODEL')
+
+        llm = ChatOpenAI(
+            temperature=0.0,
+            model_name=model_name,
+            openai_api_key=api_key,
+        )
+
+    # Azure OpenAI
+    if model == "azure":
+        api_key  = os.getenv('AZURE_API_KEY')
+        model_name = os.getenv('AZURE_MODEL')
+        deployment_name = os.getenv('AZURE_DEPLOYMENT_NAME')
+        api_version = os.getenv('AZURE_API_VERSION')
+        base_url = os.getenv('AZURE_API_BASE')
+
+        llm = AzureChatOpenAI(
+            temperature=0.0,
+            openai_api_base=base_url,
+            openai_api_version=api_version,
+            model_name=model_name,
+            deployment_name=deployment_name,
+            openai_api_key=api_key,
+            openai_api_type = "azure",
+        )   
+
+    # Google Vertex AI (PaLM)
+    if model == "palm":
+        llm = ChatVertexAI(
+            temperature=0.0,
+        )
 
     agent = initialize_agent(
         tools, 
@@ -63,16 +88,17 @@ def initAgent():
     return agent
 
 # start server
-server = Flask(__name__, static_folder=static_dir, template_folder=static_dir)
+print("\033[96mStarting Ghost at http://127.0.0.1:1337\033[0m")
+ghost = Flask(__name__, static_folder=static_dir, template_folder=static_dir)
 agent = initAgent()
 
 # server landing page
-@server.route('/')
+@ghost.route('/')
 def landing():
     return render_template('index.html')
 
-# run the promptscript
-@server.route('/run', methods=['POST'])
+# run
+@ghost.route('/run', methods=['POST'])
 def run():
     data = request.json
     response = agent.run(data['input'])    
@@ -80,7 +106,7 @@ def run():
                     'response': response})
 
 if __name__ == '__main__':
-    # start server
-    server.run("127.0.0.1", 1337, debug=False)
-    
+    print("\033[93mGhost started. Press CTRL+C to quit.\033[0m")
+    webbrowser.open("http://127.0.0.1:1337")
+    serve(ghost, host='127.0.0.1', port=1337)
 
