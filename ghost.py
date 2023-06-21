@@ -74,6 +74,7 @@ def initAgent():
     if model == "palm":
         llm = ChatVertexAI(
             temperature=0.0,
+            max_output_tokens=1024,
         )
 
     agent = initialize_agent(
