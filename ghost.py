@@ -7,6 +7,7 @@ from langchain.utilities import PythonREPL
 from langchain.tools import ShellTool
 from langchain.tools import DuckDuckGoSearchRun
 from langchain.chat_models import AzureChatOpenAI, ChatVertexAI, ChatOpenAI
+from langchain.llms import OpenAI, AzureOpenAI
 from waitress import serve
 import webbrowser
 
@@ -22,6 +23,7 @@ if not os.path.exists(static_dir):
 
 # initialise the agent
 def initAgent():
+    print("\033[96mInitialising Ghost with the following specifications:\033[0m")
     # read the specifications from file
     specs = ""
     with open(specs_file, 'r') as file:
@@ -41,16 +43,27 @@ def initAgent():
     tools = [repl_tool, shell_tool, search]
     memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
 
+    print(f"\033[96mUsing {model}\033[0m")
     # OpenAI
     if model == "openai":
         api_key  = os.getenv('OPENAI_API_KEY')
         model_name = os.getenv('OPENAI_MODEL')
+        api_version = os.getenv('OPENAI_API_VERSION')
+        base_url = os.getenv('OPENAI_API_BASE')        
 
-        llm = ChatOpenAI(
-            temperature=0.0,
-            model_name=model_name,
-            openai_api_key=api_key,
-        )
+        if model_name.startswith("gpt-4") or model.startswith("gpt-3.5"):
+            llm = ChatOpenAI(
+                temperature=0.0,
+                model_name=model_name,
+                openai_api_key=api_key,
+            )      
+        else:
+            llm = OpenAI(
+                temperature=0.0,
+                model_name=model_name,
+                openai_api_key=api_key,
+            )      
+
 
     # Azure OpenAI
     if model == "azure":
@@ -59,22 +72,33 @@ def initAgent():
         deployment_name = os.getenv('AZURE_DEPLOYMENT_NAME')
         api_version = os.getenv('AZURE_API_VERSION')
         base_url = os.getenv('AZURE_API_BASE')
-
-        llm = AzureChatOpenAI(
-            temperature=0.0,
-            openai_api_base=base_url,
-            openai_api_version=api_version,
-            model_name=model_name,
-            deployment_name=deployment_name,
-            openai_api_key=api_key,
-            openai_api_type = "azure",
-        )   
+        
+        if model_name.startswith("gpt-4") or model.startswith("gpt-3.5"):
+            llm = AzureChatOpenAI(
+                temperature=0.0,
+                openai_api_base=base_url,
+                openai_api_version=api_version,
+                model_name=model_name,
+                deployment_name=deployment_name,
+                openai_api_key=api_key,
+                openai_api_type = "azure",
+            )   
+        else:
+            llm = AzureOpenAI(
+                temperature=0.6,
+                openai_api_base=base_url,
+                openai_api_version=api_version,
+                model_name=model_name,
+                deployment_name=deployment_name,
+                openai_api_key=api_key,
+                openai_api_type = "azure",
+            )   
 
     # Google Vertex AI (PaLM)
     if model == "palm":
         llm = ChatVertexAI(
             temperature=0.0,
-            max_output_tokens=1024,
+            model_name=os.getenv('PALM_MODEL'),
         )
 
     agent = initialize_agent(
@@ -83,7 +107,7 @@ def initAgent():
         agent=AgentType.CHAT_CONVERSATIONAL_REACT_DESCRIPTION, 
         verbose=True, 
         memory=memory,
-        handle_parsing_errors="Check your output and make sure it conforms!")
+        handle_parsing_errors="Check your output and make sure it conforms.")
 
     agent.run(specs)
     return agent

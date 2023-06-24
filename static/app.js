@@ -8,11 +8,11 @@ $(document).ready(function(){
         var prompt = $("#prompt").val().trimEnd();
         $("#prompt").val("");
         $("#printout").append(
-            "<div class='px-3 pt-2 text-primary-emphasis bg-light'>" + 
+            "<div class='px-3 py-2 text-primary-emphasis bg-light'>" + 
             "<pre style='white-space: pre-wrap;'>" +
             prompt  +
             "</pre>" +
-            "<hr/></div>"             
+            "</div>"             
         );        
         $(".border").animate({ scrollTop: $('.border').prop("scrollHeight")}, 1000);
         runScript(prompt);        
@@ -60,7 +60,7 @@ function runScript(prompt, action="/run") {
                 data.response + 
                 "</pre>" +
                 " <small>(" + t + "s)</small> " + 
-                "<hr/></div>" 
+                "</div>" 
             );           
             $(".border").animate({ scrollTop: $('.border').prop("scrollHeight")}, 1000);
             t = 0;
