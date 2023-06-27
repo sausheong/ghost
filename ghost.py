@@ -36,8 +36,8 @@ def initAgent():
         model_name = os.getenv('OPENAI_MODEL')
         api_version = os.getenv('OPENAI_API_VERSION')
         base_url = os.getenv('OPENAI_API_BASE')        
-
-        if model_name.startswith("gpt-4") or model.startswith("gpt-3.5"):
+        print(f"\033[96mUsing {model_name}\033[0m") 
+        if model_name.startswith("gpt-4") or model_name.startswith("gpt-3.5"):
             llm = ChatOpenAI(
                 temperature=0.0,
                 model_name=model_name,
@@ -58,8 +58,8 @@ def initAgent():
         deployment_name = os.getenv('AZURE_DEPLOYMENT_NAME')
         api_version = os.getenv('AZURE_API_VERSION')
         base_url = os.getenv('AZURE_API_BASE')
-        
-        if model_name.startswith("gpt-4") or model.startswith("gpt-3.5"):
+        print(f"\033[96mUsing {model_name}\033[0m") 
+        if model_name.startswith("gpt-4") or model_name.startswith("gpt-3.5"):                       
             llm = AzureChatOpenAI(
                 temperature=0.0,
                 openai_api_base=base_url,
@@ -91,7 +91,7 @@ def initAgent():
     agent = initialize_agent(
         get_tools(), 
         llm, 
-        agent=AgentType.CHAT_CONVERSATIONAL_REACT_DESCRIPTION,         
+        agent=AgentType.CONVERSATIONAL_REACT_DESCRIPTION,         
         memory=ConversationBufferMemory(memory_key="chat_history", return_messages=True),
         handle_parsing_errors="Check your output and make sure it conforms.",
         verbose=True)

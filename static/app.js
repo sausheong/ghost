@@ -1,6 +1,7 @@
 
 t = 0;
 let resp = "";
+var converter = new showdown.Converter();
 
 $(document).ready(function(){  
     $('#send').click(function(e){
@@ -53,19 +54,19 @@ function runScript(prompt, action="/run") {
         success: function(data){            
             $("#printout").append(
                 "<div class='px-3 py-3'>" + 
-                "<pre style='white-space: pre-wrap;'>" + 
-                data.response + 
-                "</pre>" +
+                "<div style='white-space: pre-wrap;'>" + 
+                converter.makeHtml(data.response) + 
+                "</div>" +
                 " <small>(" + t + "s)</small> " + 
                 "</div>" 
             );           
         },
         error: function(data) {
             $("#printout").append(
-                "<div class='text-warning px-3 py-3'>" + 
-                "<pre style='white-space: pre-wrap;'>" + 
+                "<div class='text-danger px-3 py-3'>" + 
+                "<div style='white-space: pre-wrap;'>" + 
                 "There is a problem answering your question. Please check the command line output." + 
-                "</pre>" +
+                "</div>" +
                 " <small>(" + t + "s)</small> " + 
                 "</div>" 
             );              
