@@ -8,10 +8,10 @@ $(document).ready(function(){
         var prompt = $("#prompt").val().trimEnd();
         $("#prompt").val("");
         $("#printout").append(
-            "<div class='px-3 py-2 text-primary-emphasis bg-light'>" + 
-            "<pre style='white-space: pre-wrap;'>" +
+            "<div class='px-3 py-3 text-primary-emphasis bg-light'>" + 
+            "<div style='white-space: pre-wrap;'>" +
             prompt  +
-            "</pre>" +
+            "</div>" +
             "</div>"             
         );        
         $(".border").animate({ scrollTop: $('.border').prop("scrollHeight")}, 1000);
@@ -50,21 +50,33 @@ function runScript(prompt, action="/run") {
         data: JSON.stringify({input: prompt}),
         contentType:"application/json; charset=utf-8",
         dataType:"json",
-        success: function(data){
-            clearInterval(myInterval);
-            $("#bot").addClass("fa-solid fa-ghost");
-            $("#bot").removeClass("spinner-border");                          
+        success: function(data){            
             $("#printout").append(
-                "<div class='px-3 py-2'>" + 
+                "<div class='px-3 py-3'>" + 
                 "<pre style='white-space: pre-wrap;'>" + 
                 data.response + 
                 "</pre>" +
                 " <small>(" + t + "s)</small> " + 
                 "</div>" 
             );           
-            $(".border").animate({ scrollTop: $('.border').prop("scrollHeight")}, 1000);
+        },
+        error: function(data) {
+            $("#printout").append(
+                "<div class='text-warning px-3 py-3'>" + 
+                "<pre style='white-space: pre-wrap;'>" + 
+                "There is a problem answering your question. Please check the command line output." + 
+                "</pre>" +
+                " <small>(" + t + "s)</small> " + 
+                "</div>" 
+            );              
+        },
+        complete: function(data) {
+            clearInterval(myInterval);
             t = 0;
-            hljs.highlightAll();
+            $("#bot").addClass("fa-solid fa-ghost");
+            $("#bot").removeClass("spinner-border");         
+            $(".border").animate({ scrollTop: $('.border').prop("scrollHeight")}, 1000);            
+            hljs.highlightAll();                             
         }
     });   
 }

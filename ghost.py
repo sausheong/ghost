@@ -2,10 +2,8 @@ import os
 from flask import Flask, render_template, request, jsonify
 from dotenv import load_dotenv, find_dotenv
 from langchain.memory import ConversationBufferMemory
-from langchain.agents import initialize_agent, Tool, AgentType
-from langchain.utilities import PythonREPL
-from langchain.tools import ShellTool
-from langchain.tools import DuckDuckGoSearchRun
+from langchain.agents import initialize_agent, AgentType
+from tools import get_tools
 from langchain.chat_models import AzureChatOpenAI, ChatVertexAI, ChatOpenAI
 from langchain.llms import OpenAI, AzureOpenAI
 from waitress import serve
@@ -30,20 +28,8 @@ def initAgent():
         specs = file.read()
     print(specs, "\nlength:", len(specs), "words")
 
-    python_repl = PythonREPL()
-    repl_tool = Tool(
-        name="python_repl",
-        description="A Python shell. Use this to execute python commands. \
-            Input should be a valid python command. If you want to see the \
-            output of a value, you should print it ut with `print(...)`.",
-        func=python_repl.run
-    )
-    shell_tool = ShellTool()
-    search = DuckDuckGoSearchRun()
-    tools = [repl_tool, shell_tool, search]
-    memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
-
     print(f"\033[96mUsing {model}\033[0m")
+
     # OpenAI
     if model == "openai":
         api_key  = os.getenv('OPENAI_API_KEY')
@@ -101,13 +87,14 @@ def initAgent():
             model_name=os.getenv('PALM_MODEL'),
         )
 
+    # initialise agent execut
     agent = initialize_agent(
-        tools, 
+        get_tools(), 
         llm, 
-        agent=AgentType.CHAT_CONVERSATIONAL_REACT_DESCRIPTION, 
-        verbose=True, 
-        memory=memory,
-        handle_parsing_errors="Check your output and make sure it conforms.")
+        agent=AgentType.CHAT_CONVERSATIONAL_REACT_DESCRIPTION,         
+        memory=ConversationBufferMemory(memory_key="chat_history", return_messages=True),
+        handle_parsing_errors="Check your output and make sure it conforms.",
+        verbose=True)
 
     agent.run(specs)
     return agent
@@ -134,4 +121,5 @@ if __name__ == '__main__':
     print("\033[93mGhost started. Press CTRL+C to quit.\033[0m")
     webbrowser.open("http://127.0.0.1:1337")
     serve(ghost, host='127.0.0.1', port=1337)
+
 

@@ -4,5 +4,4 @@ waitress
 langchain
 openai
 duckduckgo-search
-wikipedia
 google-cloud-aiplatform
