@@ -1,10 +1,16 @@
 # Ghost
 
-[![Ghost AI code assistant that runs on your laptop](https://img.youtube.com/vi/AkfAONksQoA/default.jpg)](https://youtu.be/AkfAONksQoA)
+[![Ghost AI code assistant that runs on your laptop](https://img.youtube.com/vi/AkfAONksQoA/0.jpg)](https://youtu.be/AkfAONksQoA)
 
-[![Ghost refactoring itself!](https://img.youtube.com/vi/6aOzgnDGBfo/default.jpg)](https://youtu.be/6aOzgnDGBfo)
+Ghost AI code assistant that runs on your laptop
 
-[![Ghost searching on the Internet](https://img.youtube.com/vi/hCVyqrrqH7E/default.jpg)](https://youtu.be/hCVyqrrqH7E)
+[![Ghost refactoring itself!](https://img.youtube.com/vi/6aOzgnDGBfo/0.jpg)](https://youtu.be/6aOzgnDGBfo)
+
+Ghost refactoring itself!
+
+[![Ghost searching on the Internet](https://img.youtube.com/vi/hCVyqrrqH7E/0.jpg)](https://youtu.be/hCVyqrrqH7E)
+
+Ghost searching on the Internet
 
 Ghost is a small footprint AI assistant, built to run locally in your computer. It is meant as an interface for developers and everything is minimal and can be changed easily to suit your personal needs.
 
