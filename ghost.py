@@ -13,6 +13,9 @@ import webbrowser
 load_dotenv(find_dotenv())
 specs_file = os.getenv('SPECS')
 model = os.getenv('MODEL')
+model = model if model is not None else 'openai'
+retries = os.getenv('MAX_RETRIES')
+retries = int(retries) if retries is not None else 3
 
 # get path for static files
 static_dir = os.path.join(os.path.dirname(__file__), 'static')  
@@ -28,7 +31,7 @@ def initAgent():
         specs = file.read()
     print(specs, "\nlength:", len(specs), "words")
 
-    print(f"\033[96mUsing {model}\033[0m")
+    print(f"\033[96mUsing {model} \033[0m")
 
     # OpenAI
     if model == "openai":
@@ -36,29 +39,31 @@ def initAgent():
         model_name = os.getenv('OPENAI_MODEL')
         api_version = os.getenv('OPENAI_API_VERSION')
         base_url = os.getenv('OPENAI_API_BASE')        
-        print(f"\033[96mUsing {model_name}\033[0m") 
+
         if model_name.startswith("gpt-4") or model_name.startswith("gpt-3.5"):
             llm = ChatOpenAI(
                 temperature=0.0,
                 model_name=model_name,
                 openai_api_key=api_key,
+                max_retries=retries,
             )      
         else:
             llm = OpenAI(
                 temperature=0.0,
                 model_name=model_name,
                 openai_api_key=api_key,
+                max_retries=retries,
             )      
 
 
-    # Azure OpenAI
+    # Azure OpenA
     if model == "azure":
         api_key  = os.getenv('AZURE_API_KEY')
         model_name = os.getenv('AZURE_MODEL')
         deployment_name = os.getenv('AZURE_DEPLOYMENT_NAME')
         api_version = os.getenv('AZURE_API_VERSION')
         base_url = os.getenv('AZURE_API_BASE')
-        print(f"\033[96mUsing {model_name}\033[0m") 
+        
         if model_name.startswith("gpt-4") or model_name.startswith("gpt-3.5"):                       
             llm = AzureChatOpenAI(
                 temperature=0.0,
@@ -67,25 +72,32 @@ def initAgent():
                 model_name=model_name,
                 deployment_name=deployment_name,
                 openai_api_key=api_key,
+                max_retries=retries,
                 openai_api_type = "azure",
             )   
         else:
             llm = AzureOpenAI(
-                temperature=0.6,
+                temperature=0.0,
                 openai_api_base=base_url,
                 openai_api_version=api_version,
                 model_name=model_name,
                 deployment_name=deployment_name,
                 openai_api_key=api_key,
+                max_retries=retries,
                 openai_api_type = "azure",
             )   
 
     # Google Vertex AI (PaLM)
     if model == "palm":
+        model_name = os.getenv('PALM_MODEL')
         llm = ChatVertexAI(
             temperature=0.0,
-            model_name=os.getenv('PALM_MODEL'),
+            model_name=model_name,
+            location=os.getenv('PALM_LOCATION'),
+            max_output_tokens=2048
         )
+
+    print(f"\033[96mWith {model_name}\033[0m") 
 
     # initialise agent execut
     agent = initialize_agent(
@@ -121,5 +133,4 @@ if __name__ == '__main__':
     print("\033[93mGhost started. Press CTRL+C to quit.\033[0m")
     webbrowser.open("http://127.0.0.1:1337")
     serve(ghost, host='127.0.0.1', port=1337)
-
 

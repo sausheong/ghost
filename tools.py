@@ -26,6 +26,12 @@ def get_tools():
         name="askpdf_tool",
         description=askpdf.description,
         func=askpdf.run)
+    carpark = AIPluginTool.from_plugin_url("https://carpark.sausheong.com/.well-known/ai-plugin.json")
+    carpark_tool = Tool(
+        name="carpark_tool",
+        description=carpark.description,
+        func=carpark.run)
+
     # shell
     shell_tool = ShellTool()
     # DuckDuckGo search
@@ -36,5 +42,6 @@ def get_tools():
         wolfram_tool,
         askpdf_tool,
         shell_tool,
-        search_tool
+        search_tool,
+        carpark_tool
     ] + load_tools(["requests_all"])
