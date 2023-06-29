@@ -12,10 +12,8 @@ import webbrowser
 # get configurations
 load_dotenv(find_dotenv())
 specs_file = os.getenv('SPECS')
-model = os.getenv('MODEL')
-model = model if model is not None else 'openai'
-retries = os.getenv('MAX_RETRIES')
-retries = int(retries) if retries is not None else 3
+model = os.getenv('MODEL', 'openai') # defaults to openai
+retries = int(os.getenv('MAX_RETRIES', 3))
 
 # get path for static files
 static_dir = os.path.join(os.path.dirname(__file__), 'static')  
