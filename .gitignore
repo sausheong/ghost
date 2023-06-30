@@ -3,3 +3,4 @@
 .hintrc
 __pycache__
 *.bin
+output.md

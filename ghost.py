@@ -8,12 +8,15 @@ from langchain.chat_models import AzureChatOpenAI, ChatVertexAI, ChatOpenAI
 from langchain.llms import OpenAI, AzureOpenAI
 from waitress import serve
 import webbrowser
+from datetime import datetime
 
 # get configurations
 load_dotenv(find_dotenv())
 specs_file = os.getenv('SPECS')
 model = os.getenv('MODEL', 'openai') # defaults to openai
+model_name = ""
 retries = int(os.getenv('MAX_RETRIES', 3))
+output_file = os.getenv('OUTPUT_FILE', 'output.md')
 
 # get path for static files
 static_dir = os.path.join(os.path.dirname(__file__), 'static')  
@@ -22,6 +25,7 @@ if not os.path.exists(static_dir):
 
 # initialise the agent
 def initAgent():
+    global model_name
     print("\033[96mInitialising Ghost with the following specifications:\033[0m")
     # read the specifications from file
     specs = ""
@@ -61,7 +65,7 @@ def initAgent():
         deployment_name = os.getenv('AZURE_DEPLOYMENT_NAME')
         api_version = os.getenv('AZURE_API_VERSION')
         base_url = os.getenv('AZURE_API_BASE')
-        
+
         if model_name.startswith("gpt-4") or model_name.startswith("gpt-3.5"):                       
             llm = AzureChatOpenAI(
                 temperature=0.0,
@@ -109,6 +113,13 @@ def initAgent():
     agent.run(specs)
     return agent
 
+def save(prompt, response):
+     with open(output_file, 'a') as file:
+         file.write("# " + model.upper() + " " + model_name.upper() + " [" + datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "]" + 
+                    "\n## PROMPT\n" + prompt +
+                    "\n## RESPONSE\n" + response + 
+                    "\n\n")
+
 # start server
 print("\033[96mStarting Ghost at http://127.0.0.1:1337\033[0m")
 ghost = Flask(__name__, static_folder=static_dir, template_folder=static_dir)
@@ -123,7 +134,8 @@ def landing():
 @ghost.route('/run', methods=['POST'])
 def run():
     data = request.json
-    response = agent.run(data['input'])    
+    response = agent.run(data['input'])   
+    save(data['input'], response) 
     return jsonify({'input': data['input'],
                     'response': response})
 
