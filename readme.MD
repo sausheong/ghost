@@ -1,5 +1,7 @@
 # Ghost
 
+Ghost is a small footprint AI assistant, built to run locally in your computer. It is meant as an interface for developers and everything is minimal and can be changed easily to suit your personal needs.
+
 [![Ghost AI code assistant that runs on your laptop](https://img.youtube.com/vi/AkfAONksQoA/0.jpg)](https://youtu.be/AkfAONksQoA)
 
 Ghost AI code assistant that runs on your laptop
@@ -12,9 +14,8 @@ Ghost refactoring itself!
 
 Ghost searching on the Internet
 
-Ghost is a small footprint AI assistant, built to run locally in your computer. It is meant as an interface for developers and everything is minimal and can be changed easily to suit your personal needs.
+Ghost is written using Langchain and has configured the following tools by default:
 
-ghost is written using Langchain and has configured the following tools by default:
 1. Python REPL Tool
 2. Shell Tool
 3. DuckDuckSearch Tool
@@ -22,7 +23,7 @@ ghost is written using Langchain and has configured the following tools by defau
 
 It is also configured for several ChatGPT Plugins. Please check the `tools.py` file for more details.
 
-It is fully customisable and extensible.
+It is fully customisable and extensible. In fact, while Ghost can be used out-of-the-box, it is meant to be customised for your own personal usage and style. Feel free to add or remove tools accordingly or change everything to what you want!
 
 ## Setup
 
@@ -61,3 +62,7 @@ $ gcloud auth application-default login
 
 3. This will open up a browser for you to log into the account with the credentials to access Vertex AI. Follow the instructions and click through to login and approve.
 4. Once you you're done, an `application_default_credentials.json` file wil be created at the default location. Ghost will know how to locate this file (it's just using Google's default location to find it) to log into Vertex. 
+
+## Saving output
+
+By default, Ghost saves all your output to markdown format in a file named `output.md`. You can change it in the `.env` file.
