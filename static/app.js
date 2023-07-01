@@ -77,7 +77,8 @@ function runScript(prompt, action="/run") {
             $("#bot").addClass("fa-solid fa-ghost");
             $("#bot").removeClass("spinner-border");         
             $(".border").animate({ scrollTop: $('.border').prop("scrollHeight")}, 1000);            
-            hljs.highlightAll();                             
+            hljs.highlightAll(); 
+            quote();                            
         }
     });   
 }

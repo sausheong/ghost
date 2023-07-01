@@ -95,7 +95,7 @@ def initAgent():
         llm = ChatVertexAI(
             temperature=0.0,
             model_name=model_name,
-            location=os.getenv('PALM_LOCATION'),
+            location=os.getenv('PALM_LOCATION', 'us-central1'),
             max_output_tokens=2048
         )
 
@@ -115,7 +115,8 @@ def initAgent():
 
 def save(prompt, response):
      with open(output_file, 'a') as file:
-         file.write("# " + model.upper() + " " + model_name.upper() + " [" + datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "]" + 
+         file.write("# " + model.upper() + " " + model_name.upper() + 
+                    " [" + datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "]" + 
                     "\n## PROMPT\n" + prompt +
                     "\n## RESPONSE\n" + response + 
                     "\n\n")

@@ -21,7 +21,7 @@
 <body>
     <div class="container pt-3">    
         <div class="row">
-            <h1 class="text-black-50 text-end pb-2"><span class="text-info">g</span><span>host</span> <small><i id="bot" class="text-info fa-solid fa-ghost"></i></i></small></h1>
+            <h1 class="text-black-50 text-end pb-2"><span>ghost</span> <small><i id="bot" class="text-info fa-solid fa-ghost"></i></i></small></h1>
         </div>
 
         <div class="main-controls pb-3">
@@ -45,10 +45,11 @@
         </div>              
 
         <div class="pb-3 pt-3">
-            <small>now you see it.</small>&nbsp;<small class="text-info">now you see don't.</small>
+            <small class="text-info" id="quote"></small>
         </div>    
     </div>
     <script src="{{ url_for('static', filename='autosize.min.js') }}"></script>
     <script src="{{ url_for('static', filename='app.js') }}"></script>
+    <script src="{{ url_for('static', filename='quotes.js') }}"></script>
 </body>
 </html>
