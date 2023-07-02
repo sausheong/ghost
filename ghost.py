@@ -1,4 +1,5 @@
 import os
+import sys
 from flask import Flask, render_template, request, jsonify
 from dotenv import load_dotenv, find_dotenv
 from langchain.memory import ConversationBufferMemory
@@ -14,7 +15,7 @@ from datetime import datetime
 load_dotenv(find_dotenv())
 specs_file = os.getenv('SPECS')
 model = os.getenv('MODEL', 'openai') # defaults to openai
-model_name = ""
+llm = None
 retries = int(os.getenv('MAX_RETRIES', 3))
 output_file = os.getenv('OUTPUT_FILE', 'output.md')
 
@@ -25,14 +26,13 @@ if not os.path.exists(static_dir):
 
 # initialise the agent
 def initAgent():
-    global model_name
+    global llm
     print("\033[96mInitialising Ghost with the following specifications:\033[0m")
     # read the specifications from file
     specs = ""
     with open(specs_file, 'r') as file:
         specs = file.read()
     print(specs, "\nlength:", len(specs), "words")
-
     print(f"\033[96mUsing {model} \033[0m")
 
     # OpenAI
@@ -99,7 +99,10 @@ def initAgent():
             max_output_tokens=2048
         )
 
-    print(f"\033[96mWith {model_name}\033[0m") 
+    if llm == None:
+        sys.exit("No valid LLM configured:" + model)  
+
+    print(f"\033[96mWith {llm.model_name}\033[0m") 
 
     # initialise agent execut
     agent = initialize_agent(
@@ -115,8 +118,8 @@ def initAgent():
 
 def save(prompt, response):
      with open(output_file, 'a') as file:
-         file.write("# " + model.upper() + " " + model_name.upper() + 
-                    " [" + datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "]" + 
+         file.write("# " + model.upper() + " " + llm.model_name.upper() + 
+                    " <small>[" + datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "]</small>" + 
                     "\n## PROMPT\n" + prompt +
                     "\n## RESPONSE\n" + response + 
                     "\n\n")
