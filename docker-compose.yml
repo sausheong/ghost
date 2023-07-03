@@ -1,0 +1,21 @@
+version: "1.0"
+
+services:
+  ghost:
+    build:
+      dockerfile: Dockerfile
+    environment:
+      - SPECS
+      - PROVIDER
+      - OPENAI_MODEL
+      - OPENAI_API_KEY
+      - AZURE_MODEL
+      - AZURE_DEPLOYMENT_NAME
+      - AZURE_API_VERSION
+      - AZURE_API_BASE
+      - AZURE_API_KEY
+      - PALM_MODEL
+    ports:
+      - 1337:1337
+    volumes:
+      - ./:/app
