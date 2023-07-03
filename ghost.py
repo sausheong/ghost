@@ -6,7 +6,7 @@ from langchain.memory import ConversationBufferMemory
 from langchain.agents import initialize_agent, AgentType
 from tools import get_tools
 from langchain.chat_models import AzureChatOpenAI, ChatVertexAI, ChatOpenAI
-from langchain.llms import OpenAI, AzureOpenAI
+from langchain.llms import OpenAI, AzureOpenAI, VertexAI
 from waitress import serve
 import webbrowser
 from datetime import datetime
@@ -44,14 +44,14 @@ def initAgent():
 
         if model_name.startswith("gpt-4") or model_name.startswith("gpt-3.5"):
             llm = ChatOpenAI(
-                temperature=0.0,
+                temperature=0.7,
                 model_name=model_name,
                 openai_api_key=api_key,
                 max_retries=retries,
             )      
         else:
             llm = OpenAI(
-                temperature=0.0,
+                temperature=0.7,
                 model_name=model_name,
                 openai_api_key=api_key,
                 max_retries=retries,
@@ -68,7 +68,7 @@ def initAgent():
 
         if model_name.startswith("gpt-4") or model_name.startswith("gpt-3.5"):                       
             llm = AzureChatOpenAI(
-                temperature=0.0,
+                temperature=0.7,
                 openai_api_base=base_url,
                 openai_api_version=api_version,
                 model_name=model_name,
@@ -79,7 +79,7 @@ def initAgent():
             )   
         else:
             llm = AzureOpenAI(
-                temperature=0.0,
+                temperature=0.7,
                 openai_api_base=base_url,
                 openai_api_version=api_version,
                 model_name=model_name,
@@ -91,13 +91,21 @@ def initAgent():
 
     # Google Vertex AI (PaLM)
     if model == "palm":
-        model_name = os.getenv('PALM_MODEL')
-        llm = ChatVertexAI(
-            temperature=0.0,
-            model_name=model_name,
-            location=os.getenv('PALM_LOCATION', 'us-central1'),
-            max_output_tokens=2048
-        )
+        model_name = os.getenv('PALM_MODEL', 'chat-bison')
+        if model_name == "chat-bison" or model_name == "codechat-bison":
+            llm = ChatVertexAI(
+                temperature=0.7,
+                model_name=model_name,
+                location=os.getenv('PALM_LOCATION', 'us-central1'),
+                max_output_tokens=1024,
+            )
+        else:
+            llm = VertexAI(
+                temperature=0.7,
+                model_name=model_name,
+                location=os.getenv('PALM_LOCATION', 'us-central1'),
+                max_output_tokens=1024,
+            )
 
     if llm == None:
         sys.exit("No valid LLM configured:" + model)  
