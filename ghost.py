@@ -14,7 +14,7 @@ from datetime import datetime
 # get configurations
 load_dotenv(find_dotenv())
 specs_file = os.getenv('SPECS')
-model = os.getenv('MODEL', 'openai') # defaults to openai
+provider = os.getenv('PROVIDER', 'openai') # defaults to openai
 llm = None
 retries = int(os.getenv('MAX_RETRIES', 3))
 output_file = os.getenv('OUTPUT_FILE', 'output.md')
@@ -33,10 +33,10 @@ def initAgent():
     with open(specs_file, 'r') as file:
         specs = file.read()
     print(specs, "\nlength:", len(specs), "words")
-    print(f"\033[96mUsing {model} \033[0m")
+    print(f"\033[96mUsing {provider} \033[0m")
 
     # OpenAI
-    if model == "openai":
+    if provider == "openai":
         api_key  = os.getenv('OPENAI_API_KEY')
         model_name = os.getenv('OPENAI_MODEL')
         api_version = os.getenv('OPENAI_API_VERSION')
@@ -59,7 +59,7 @@ def initAgent():
 
 
     # Azure OpenA
-    if model == "azure":
+    if provider == "azure":
         api_key  = os.getenv('AZURE_API_KEY')
         model_name = os.getenv('AZURE_MODEL')
         deployment_name = os.getenv('AZURE_DEPLOYMENT_NAME')
@@ -90,7 +90,7 @@ def initAgent():
             )   
 
     # Google Vertex AI (PaLM)
-    if model == "palm":
+    if provider == "palm":
         model_name = os.getenv('PALM_MODEL', 'chat-bison')
         if model_name == "chat-bison" or model_name == "codechat-bison":
             llm = ChatVertexAI(
@@ -108,7 +108,7 @@ def initAgent():
             )
 
     if llm == None:
-        sys.exit("No valid LLM configured:" + model)  
+        sys.exit("No valid LLM configured:" + provider)  
 
     print(f"\033[96mWith {llm.model_name}\033[0m") 
 
@@ -126,7 +126,7 @@ def initAgent():
 
 def save(prompt, response):
      with open(output_file, 'a') as file:
-         file.write("# " + model.upper() + " " + llm.model_name.upper() + 
+         file.write("# " + provider.upper() + " " + llm.model_name.upper() + 
                     " <small>[" + datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "]</small>" + 
                     "\n## PROMPT\n" + prompt +
                     "\n## RESPONSE\n" + response + 
