@@ -153,6 +153,7 @@ def run():
 
 if __name__ == '__main__':
     print("\033[93mGhost started. Press CTRL+C to quit.\033[0m")
-    webbrowser.open("http://127.0.0.1:1337")
-    serve(ghost, host='127.0.0.1', port=1337)
+    # webbrowser.open("http://127.0.0.1:1337")
+    # serve(ghost, host='127.0.0.1', port=1337)
+    serve(ghost, port=1337)
 
