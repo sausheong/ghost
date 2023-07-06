@@ -13,11 +13,11 @@ from datetime import datetime
 
 # get configurations
 load_dotenv(find_dotenv())
-specs_file = os.getenv('SPECS')
-provider = os.getenv('PROVIDER', 'openai') # defaults to openai
+specs_file = os.getenv('SPECS') or 'specs.md' # defaults to specs.md
+provider = os.getenv('PROVIDER') or 'openai' # defaults to openai
+output_file = os.getenv('OUTPUT_FILE') or 'output.md' # defaults to output.md
+retries = int(os.getenv('MAX_RETRIES', 3) or 3) # defaults to 3
 llm = None
-retries = int(os.getenv('MAX_RETRIES', 3))
-output_file = os.getenv('OUTPUT_FILE', 'output.md')
 
 # get path for static files
 static_dir = os.path.join(os.path.dirname(__file__), 'static')  
