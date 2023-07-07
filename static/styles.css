@@ -41,12 +41,12 @@ body {
 .logo.active {
   --logo-h: 3.625rem;
   left: 0;
-  top: 2rem;
+  top: 1.5rem;
   transform: translate(0, 0);
 }
 
 .logo-wrapper:has(.logo.active) {
-  height: calc(var(--logo-h) + 2.5rem);
+  height: calc(var(--logo-h) + 1.5rem);
   margin-bottom: 1rem;
   flex-shrink: 0;
   position: sticky;
