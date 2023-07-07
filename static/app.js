@@ -8,15 +8,22 @@ $(document).ready(function(){
         e.preventDefault();
         var prompt = $("#prompt").val().trimEnd();
         $("#prompt").val("");
+        autosize.update($("#prompt"));
+
         $("#printout").append(
-            "<div class='px-3 py-3 text-primary-emphasis bg-light'>" + 
+            "<div class='prompt-message'>" + 
             "<div style='white-space: pre-wrap;'>" +
             prompt  +
             "</div>" +
+            "<span class='message-loader js-loading spinner-border'></span>" +
             "</div>"             
         );        
-        $(".border").animate({ scrollTop: $('.border').prop("scrollHeight")}, 1000);
-        runScript(prompt);        
+        // $(".border").animate({ scrollTop: $('.border').prop("scrollHeight")}, 1000);
+        window.scrollTo({top: document.body.scrollHeight, behavior:'smooth' });
+
+        runScript(prompt);  
+        
+        $(".js-logo").addClass("active");
     });     
     $('#prompt').keypress(function(event){        
         var keycode = (event.keyCode ? event.keyCode : event.which);
@@ -25,26 +32,26 @@ $(document).ready(function(){
             return false;
         }
     });       
-    $(function(){
-    var $overlay = $('#send'),
-        $textarea = $('#prompt')
-    ;
-    $overlay.css({
-            left: $textarea.width()-$overlay.width() + 'px',
-            border: 0,
-        });
-    });
+    // $(function(){
+    // var $overlay = $('#send'),
+    //     $textarea = $('#prompt')
+    // ;
+    // $overlay.css({
+    //         left: $textarea.width()-$overlay.width() + 'px',
+    //         border: 0,
+    //     });
+    // });
     autosize($('#prompt'));    
 });  
 
 function runScript(prompt, action="/run") {
     function myTimer() {
         $("#bot").removeClass("fa-solid fa-ghost");
-        $("#bot").addClass("spinner-border");   
+        $("#bot").addClass("spinner-border");
         t++;
     }
     const myInterval = setInterval(myTimer, 1000);          
-   
+    
     $.ajax({
         url: action,
         method:"POST",
@@ -57,17 +64,17 @@ function runScript(prompt, action="/run") {
                 "<div style='white-space: pre-wrap;'>" + 
                 converter.makeHtml(data.response) + 
                 "</div>" +
-                " <small>(" + t + "s)</small> " + 
+                " <small class='timer'>(" + t + "s)</small> " + 
                 "</div>" 
             );           
         },
         error: function(data) {
             $("#printout").append(
-                "<div class='text-danger px-3 py-3'>" + 
+                "<div class='text-danger response-message'>" + 
                 "<div style='white-space: pre-wrap;'>" + 
                 "There is a problem answering your question. Please check the command line output." + 
                 "</div>" +
-                " <small>(" + t + "s)</small> " + 
+                " <small class='timer'>(" + t + "s)</small> " + 
                 "</div>" 
             );              
         },
@@ -76,7 +83,9 @@ function runScript(prompt, action="/run") {
             t = 0;
             $("#bot").addClass("fa-solid fa-ghost");
             $("#bot").removeClass("spinner-border");         
-            $(".border").animate({ scrollTop: $('.border').prop("scrollHeight")}, 1000);            
+            $(".js-loading").removeClass("spinner-border");         
+            // $(".border").animate({ scrollTop: $('.border').prop("scrollHeight")}, 1000);            
+            window.scrollTo({top: document.body.scrollHeight, behavior:'smooth' });
             hljs.highlightAll(); 
             quote();                            
         }
