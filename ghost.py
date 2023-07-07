@@ -112,13 +112,33 @@ def initAgent():
 
     print(f"\033[96mWith {llm.model_name}\033[0m") 
 
+
+    FORMAT_INSTRUCTIONS = """Do not put any quotes in output response and To use a tool, please use the following format:
+
+\```
+Thought: Do I need to use a tool? Yes
+Action: the action to take, should be one of [{tool_names}]
+Action Input: the input to the action
+Observation: the result of the action
+\```
+
+When you have a response to say to the Human, or if you do not need to use a tool, you MUST use the following format(the prefix of "Thought: " and "{ai_prefix}: " are must be included):
+
+\```
+Thought: Do I need to use a tool? No
+{ai_prefix}: [your response here]
+\```
+do not create any triplet quotes single or double in the output,only create ASCII characters in output and no comments required
+"""
+
     # initialise agent execut
     agent = initialize_agent(
         get_tools(), 
         llm, 
         agent=AgentType.CONVERSATIONAL_REACT_DESCRIPTION,         
         memory=ConversationBufferMemory(memory_key="chat_history", return_messages=True),
-        handle_parsing_errors="Check your output and make sure it conforms.",
+        agent_kwargs={"format_instructions": FORMAT_INSTRUCTIONS},
+        handle_parsing_errors="Check the output and correct it to make it conform.",
         verbose=True)
 
     agent.run(specs)
