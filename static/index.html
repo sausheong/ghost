@@ -44,7 +44,7 @@
   </head>
   <body>
     <div
-      class="chat-container pb-0 pt-0 h-100 d-flex flex-column position-relative"
+      class="chat-container pb-3 pt-0 h-100 d-flex flex-column position-relative"
     >
       <div class="logo-wrapper row">
         <img
@@ -68,7 +68,7 @@
             >
               <textarea
                 class="form-control prompt-input"
-                placeholder="Type your question here"
+                placeholder="Ask your question here (Ctrl + Enter to send)"
                 id="prompt"
               ></textarea>
 
@@ -83,12 +83,10 @@
           </form>
         </div>
 
-        <div class="mt-1 pb-3 d-flex justify-content-between">
-          <small class="quote" id="quote"></small>
-          <small class="quote flex-shrink-0 ps-2"
-            ><strong>Ctrl + Enter</strong> to send</small
-          >
+        <div class="mt-3 pb-3 d-flex justify-content-between text-right">
+          <small class="quote" id="quote"></small>                    
         </div>
+  
       </div>
     </div>
     <script src="{{ url_for('static', filename='autosize.min.js') }}"></script>
