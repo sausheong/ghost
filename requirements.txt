@@ -5,3 +5,4 @@ langchain
 openai
 duckduckgo-search
 google-cloud-aiplatform
+"unstructured[local-inference]"

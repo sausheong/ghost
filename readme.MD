@@ -1,4 +1,4 @@
-# Ghost
+<img src="static/logo.png" alt="Ghost logo" width="150px"/>
 
 Ghost is a small footprint AI assistant, built to run locally in your computer. It is meant as an interface for developers and everything is minimal and can be changed easily to suit your personal needs.
 
