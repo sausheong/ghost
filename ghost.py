@@ -1,7 +1,6 @@
 import os
 from flask import Flask, render_template, request, jsonify
 from waitress import serve
-import webbrowser
 from datetime import datetime
 
 from agents import Agent
@@ -23,7 +22,6 @@ def save(prompt, response):
                    "\n## PROMPT\n" + prompt +
                    "\n## RESPONSE\n" + response +
                    "\n\n")
-
 
 # start server
 print("\033[96mStarting Ghost at http://127.0.0.1:1337\033[0m")
@@ -51,7 +49,6 @@ def reset():
     return jsonify({
         'response': 'Agent was reset',
     })
-
 
 if __name__ == '__main__':
     print("\033[93mGhost started. Press CTRL+C to quit.\033[0m")

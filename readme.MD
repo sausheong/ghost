@@ -1,27 +1,35 @@
 <img src="static/logo.png" alt="Ghost logo" width="150px"/>
 
-Ghost is a small footprint AI assistant, built to run locally in your computer. It is meant as an interface for developers and everything is minimal and can be changed easily to suit your personal needs.
+Ghost is a small footprint AI assistant, built to run locally in your computer. It is meant for developers and can be modified/customised easily to suit your needs. Ghost is built using Langchain.
 
-[![Ghost AI code assistant that runs on your laptop](https://img.youtube.com/vi/AkfAONksQoA/0.jpg)](https://youtu.be/AkfAONksQoA)
+[![Ghost AI code assistant that runs on your laptop](https://img.youtube.com/vi/JOhN2E7VpIg/0.jpg)](https://youtu.be/JOhN2E7VpIg)
 
 Ghost AI code assistant that runs on your laptop
 
-[![Ghost refactoring itself!](https://img.youtube.com/vi/6aOzgnDGBfo/0.jpg)](https://youtu.be/6aOzgnDGBfo)
+[![Ghost querying a relational database](https://img.youtube.com/vi/LMUp3OLz9QY/0.jpg)](https://youtu.be/LMUp3OLz9QY)
 
-Ghost refactoring itself!
+Ghost can query any relational database, given the connection URL
 
-[![Ghost searching on the Internet](https://img.youtube.com/vi/hCVyqrrqH7E/0.jpg)](https://youtu.be/hCVyqrrqH7E)
+[![Ghost analysing CSV files](https://img.youtube.com/vi/6LINgbkEy9k/0.jpg)](https://youtu.be/6LINgbkEy9k)
 
-Ghost searching on the Internet
+Ghost can analyse CSV files on your laptop
 
-Ghost is written using Langchain and has configured the following tools by default:
+[![Ghost accessing documents](https://img.youtube.com/vi/3J5guAtRLGI/0.jpg)](https://youtu.be/3J5guAtRLGI)
 
-1. Python REPL Tool
-2. Shell Tool
-3. DuckDuckSearch Tool
-4. Requests tool
+Ghost can access different documents, search for images and read from images too
 
-It is also configured for several ChatGPT Plugins. Please check the `tools.py` file for more details.
+Ghost is written using Langchain and has configured the following tools:
+
+1. Python REPL 
+2. Shell 
+3. Search (DuckDuckGo)
+4. Ask Document (Unstructured File)
+5. Ask CSV (Pandas)
+6. Ask Database
+7. Requests
+8. Image Search (Google Image Search through SerpAPI) -- requires SerpAPI API key (https://serpapi.com)
+   
+Please check the `tools.py` file for more details.
 
 It is fully customisable and extensible. In fact, while Ghost can be used out-of-the-box, it is meant to be customised for your own personal usage and style. Feel free to add or remove tools accordingly or change everything to what you want!
 

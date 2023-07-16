@@ -7,3 +7,4 @@ duckduckgo-search
 google-cloud-aiplatform
 unstructured[local-inference]
 psycopg2
+google-search-results

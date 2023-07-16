@@ -14,8 +14,10 @@ from langchain.agents import create_csv_agent
 from langchain.agents.agent_types import AgentType
 from langchain import SQLDatabase, SQLDatabaseChain
 
+from langchain.utilities import SerpAPIWrapper
+
+# Ask a document
 def ask_document(str):
-    """ Asks queries about a given document. Can take in multiple document types including PDF, text, Word, images  and so on except CSV files"""
     doc, query = str.split(",")
     loader = UnstructuredFileLoader(doc)
     documents = loader.load()
@@ -29,16 +31,16 @@ def ask_document(str):
 
 ask_document_tool = Tool(
     name="ask_document",
-    description="Asks queries about a given document. Can take in multiple document types \
-        including PDF, text, Word and so on except CSV files. The input to this tool should be a comma separated \
-        list of length two. The first string in the list is the file path for the document you \
-        want  you want query and the second is the query itself. \
-        For example, `dir/attention.pdf,What is the summary of the document?` would be the input \
-        if you wanted to query the dir/attention.pdf file.",
+    description="Asks queries about a given document. Can take in multiple document \
+        types including PDF, text, Word and so on except CSV files. The input to this \
+        tool should be a comma separated list of length two. The first string in the \
+        list is the file path for the document you want  you want query and the second \
+        is the query itself. For example, `dir/attention.pdf,What is the summary of \
+        the document?` would be the input if you wanted to query the dir/attention.pdf file.",
     func=ask_document)
 
+# Ask a CSV file
 def ask_csv(str):
-    """ Asks queries about a given csv file. """
     doc, query = str.split(",")
     llm, _ = get_provider_model()
     agent = create_csv_agent(
@@ -52,15 +54,16 @@ def ask_csv(str):
 
 ask_csv_tool = Tool(
     name="ask_csv",
-    description="Asks queries about a given csv file. The input to this tool should be a comma separated \
-        list of length two. The first string in the list is the file path for the csv file you \
-        want  you want query and the second is the query itself. \
-        For example, `dir/data.csv,How many rows are there in the csv?` would be the input \
-        if you wanted to query the dir/data.csv file.",
+    description="Asks queries about a given csv file. The input to this tool \
+        should be a comma separated list of length two. The first string in \
+        the list is the file path for the csv file you want  you want query \
+        and the second is the query itself. For example, `dir/data.csv,How many \
+        rows are there in the csv?` would be the input if you wanted to query \
+        the dir/data.csv file.",
     func=ask_csv)    
 
+# Ask a relational database
 def ask_db(str):
-    """ Asks queries about a given database. """
     uri, query = str.split("|")
     llm, _ = get_provider_model()
     db = SQLDatabase.from_uri(uri)
@@ -71,57 +74,48 @@ def ask_db(str):
 
 ask_db_tool = Tool(
     name="ask_db",
-    description="Asks queries about a given database. The input to this tool should be a vertical bar (|) separated \
-        list of length two. The first string in the uri of the database you \
-        want  you want query and the second is the query itself. \
-        For example, `postgresql://u:pwd@db.server.com:5432/dbase|How many rows are there in the users table?` would be the input \
-        if you wanted to query the postgresql://u:pwd@db.server.com:5432/dbase database.",
+    description="Asks queries about a given database. The input to this tool \
+        should be a vertical bar (|) separated list of length two. The first \
+        string in the uri of the database you want  you want query and the \
+        second is the query itself. For example, \
+        `postgresql://u:pwd@db.server.com:5432/dbase|How many rows are there \
+        in the users table?` would be the input if you wanted to query the \
+        postgresql://u:pwd@db.server.com:5432/dbase database.",
     func=ask_db)    
 
+# Python REPL
+repl_tool = Tool(
+    name="python_repl",
+    description="A Python shell. Use this to execute python commands \
+        only when explicitly asked to. Input should be a valid python \
+        command. If you want to see the output of a value, you should \
+        print it ut with `print(...)`.",
+    func=PythonREPL().run)
 
+# shell
+shell_tool = ShellTool()
 
+# DuckDuckGo search
+search_tool = DuckDuckGoSearchRun()
 
+# Image search using Google Images, through SerpAPI, you need to have an API key from https://serpapi.com
+params = {
+        "engine": "google_images",
+    }
+image_search = SerpAPIWrapper(params=params)
+image_search_tool = Tool(
+    name="image_search_tool",
+    description="An image search tool based on SerpAPI, using Google images. Use this to search for images.",
+    func=image_search.run,
+)
 
 def get_tools():
-    # Python REPL
-    repl_tool = Tool(
-        name="python_repl",
-        description="A Python shell. Use this to execute python commands \
-            only when explicitly asked to. Input should be a valid python \
-            command. If you want to see the output of a value, you should \
-            print it ut with `print(...)`.",
-        func=PythonREPL().run)
-    # ChatGPT Plugin - Wolfram Alpha
-    wolfram = AIPluginTool.from_plugin_url("https://www.wolframalpha.com/.well-known/ai-plugin.json")
-    wolfram_tool = Tool(
-        name="wolfram_tool",
-        description=wolfram.description,
-        func=wolfram.run)
-    # ChatGPT Plugin - AskPDF
-    askpdf = AIPluginTool.from_plugin_url("https://plugin.askyourpdf.com/.well-known/ai-plugin.json")
-    askpdf_tool = Tool(
-        name="askpdf_tool",
-        description=askpdf.description,
-        func=askpdf.run)
-    carpark = AIPluginTool.from_plugin_url("https://carpark.sausheong.com/.well-known/ai-plugin.json")
-    carpark_tool = Tool(
-        name="carpark_tool",
-        description=carpark.description,
-        func=carpark.run)
-
-    # shell
-    shell_tool = ShellTool()
-    # DuckDuckGo search
-    search_tool = DuckDuckGoSearchRun()
-
     return [
         repl_tool,
-        # wolfram_tool,
-        # askpdf_tool,
         shell_tool,
         search_tool,
+        image_search_tool,
         ask_document_tool,
         ask_csv_tool,
         ask_db_tool
-        # carpark_tool
     ] + load_tools(["requests_all"])

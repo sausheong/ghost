@@ -15,6 +15,7 @@ services:
       - AZURE_API_BASE
       - AZURE_API_KEY
       - PALM_MODEL
+      - SERPAPI_API_KEY
     ports:
       - 1337:1337
     volumes:
