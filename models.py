@@ -4,6 +4,7 @@ from langchain.embeddings import OpenAIEmbeddings, VertexAIEmbeddings
 from config import retries
 from config import provider_config as cfg
 
+
 def get_provider_model():
     llm = None
     # OpenAI
@@ -22,7 +23,9 @@ def get_provider_model():
                 openai_api_key=cfg.api_key,
                 max_retries=retries,
             )
-        embeddings = OpenAIEmbeddings()
+        embeddings = OpenAIEmbeddings(
+            openai_api_key=cfg.api_key,
+        )
 
     # Azure OpenAI
     if cfg.provider == "azure":
@@ -48,7 +51,9 @@ def get_provider_model():
                 max_retries=retries,
                 openai_api_type="azure",
             )
-        embeddings = OpenAIEmbeddings()
+        embeddings = OpenAIEmbeddings(
+            openai_api_key=cfg.api_key,
+        )
 
     # Google Vertex AI (PaLM)
     if cfg.provider == "palm":
@@ -65,6 +70,6 @@ def get_provider_model():
                 model_name=cfg.model_name,
                 location=cfg.location,
                 max_output_tokens=1024,
-            )    
-        embeddings = VertexAIEmbeddings()    
+            )
+        embeddings = VertexAIEmbeddings()
     return llm, embeddings
