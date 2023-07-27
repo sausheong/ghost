@@ -61,9 +61,25 @@ def getPalmProviderConfig() -> dict:
         location=os.getenv('PALM_LOCATION') or 'us-central1',
     )
 
+def getLlama2APIProviderConfig() -> dict:
+    Llama2APIConfig = namedtuple(
+        'Llama2APIConfig',
+        [
+            'provider',
+            'api_key',
+            'base_url',
+            'model_name',
+        ]
+    )
+    return Llama2APIConfig(
+        provider='llama2api',
+        api_key=os.getenv('LLAMA2API_API_KEY'),
+        base_url=os.getenv('LLAMA2API_API_BASE'),
+        model_name = "Llama-2",
+    )
 
 def getProviderConfig(provider_name: str) -> dict:
-    supported_providers = ('palm', 'azure', 'openai')
+    supported_providers = ('palm', 'azure', 'openai', 'llama2api')
 
     if not isinstance(provider_name, str):
         raise TypeError("Input must be a string.")
@@ -79,6 +95,8 @@ def getProviderConfig(provider_name: str) -> dict:
             return getAzureProviderConfig()
         case "palm":
             return getPalmProviderConfig()
+        case "llama2api":
+            return getLlama2APIProviderConfig()
 
 
 # Get configurations
