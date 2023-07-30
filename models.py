@@ -5,6 +5,7 @@ from config import retries
 from config import provider_config as cfg
 from custom import Llama2API
 
+
 def get_provider_model():
     llm = None
     # OpenAI
@@ -23,7 +24,9 @@ def get_provider_model():
                 openai_api_key=cfg.api_key,
                 max_retries=retries,
             )
-        embeddings = OpenAIEmbeddings()
+        embeddings = OpenAIEmbeddings(
+            openai_api_key=cfg.api_key,
+        )
 
     # Azure OpenAI
     if cfg.provider == "azure":
@@ -49,7 +52,9 @@ def get_provider_model():
                 max_retries=retries,
                 openai_api_type="azure",
             )
-        embeddings = OpenAIEmbeddings()
+        embeddings = OpenAIEmbeddings(
+            openai_api_key=cfg.api_key,
+        )
 
     # Google Vertex AI (PaLM)
     if cfg.provider == "palm":
@@ -77,6 +82,5 @@ def get_provider_model():
             api_key=cfg.api_key,
         )
         embeddings = OpenAIEmbeddings()
-
-
+        
     return llm, embeddings

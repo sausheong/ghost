@@ -4,6 +4,21 @@ from collections import namedtuple
 from dotenv import load_dotenv, find_dotenv
 
 
+def getSerpapiProviderConfig() -> str:
+    SerpapiConfig = namedtuple(
+        'SerpapiConfig',
+        [
+            'serpapi_api_key',
+        ]
+    )
+    if not (serpapi_api_key := os.getenv('SERPAPI_API_KEY')):
+        return None
+
+    return SerpapiConfig(
+        serpapi_api_key=serpapi_api_key
+    )
+
+
 def getOpenaiProviderConfig() -> dict:
     OpenaiConfig = namedtuple(
         'OpenaiConfig',
@@ -99,6 +114,14 @@ def getProviderConfig(provider_name: str) -> dict:
             return getLlama2APIProviderConfig()
 
 
+def getToolsConfig() -> dict:
+    supported_tools = ('serpapi')
+
+    return {
+        'serpapi': getSerpapiProviderConfig(),
+    }
+
+
 # Get configurations
 load_dotenv(find_dotenv())
 specs_file = os.getenv('SPECS') or 'specs.md'  # defaults to specs.md
@@ -106,3 +129,4 @@ output_file = os.getenv('OUTPUT_FILE') or 'output.md'  # defaults to output.md
 retries = int(os.getenv('MAX_RETRIES', 3) or 3)  # defaults to 3
 provider = os.getenv('PROVIDER') or 'openai'  # defaults to openai
 provider_config = getProviderConfig(provider_name=provider)
+tools_config = getToolsConfig()
