@@ -3,6 +3,7 @@ from langchain.llms import OpenAI, AzureOpenAI, VertexAI
 from langchain.embeddings import OpenAIEmbeddings, VertexAIEmbeddings
 from config import retries
 from config import provider_config as cfg
+from custom import Llama2API
 
 
 def get_provider_model():
@@ -70,6 +71,16 @@ def get_provider_model():
                 model_name=cfg.model_name,
                 location=cfg.location,
                 max_output_tokens=1024,
-            )
-        embeddings = VertexAIEmbeddings()
+            )    
+        embeddings = VertexAIEmbeddings() 
+
+    if cfg.provider == "llama2api":
+        llm = Llama2API(
+            temperature=0.7,
+            max_output_tokens=1024,
+            base_url=cfg.base_url,
+            api_key=cfg.api_key,
+        )
+        embeddings = OpenAIEmbeddings()
+        
     return llm, embeddings
