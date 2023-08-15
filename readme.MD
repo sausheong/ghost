@@ -35,6 +35,11 @@ It is fully customisable and extensible. In fact, while Ghost can be used out-of
 
 ## Setup
 
+### Dependencies
+You need the following installed in your system:
+- libpq-dev (ubuntu/debian) or libpq-devel (fedora/centos) or postgresql-libs (arch linux) 
+- [tessdata](https://github.com/tesseract-ocr/tessdata) (for OCR, make sure to set the path in the `.env` file)
+
 After you have clone the repo, rename the `.env.example` file to `.env` and provide the necessary API key and other information from your provider.
 
 Then set up the packages needed to run Ghost with pip.
